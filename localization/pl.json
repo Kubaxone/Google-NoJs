@@ -1,0 +1,22 @@
+{
+  "lang": "pl",
+  "dir": "ltr",
+  "search_placeholder": "",
+  "search_button": "Szukaj w Google",
+  "lucky_button": "Szczęśliwy traf",
+  "offered_in": "Google dostępny w:",
+  "offered_lang": "English",
+  "offered_lang_url": "https://www.google.com",
+  "footer_country": "Polska",
+  "footer_advertising": "Reklama",
+  "footer_business": "Biznes",
+  "footer_how_search_works": "Jak działa wyszukiwarka",
+  "footer_privacy": "Prywatność",
+  "footer_terms": "Warunki",
+  "footer_settings": "Ustawienia",
+  "header_gmail": "Gmail",
+  "header_images": "Grafika",
+  "voice_unavailable": "Wyszukiwanie głosowe nie jest dostępne w tej wersji demo.",
+  "clear_label": "Wyczyść",
+  "apps_label": "Aplikacje Google"
+}
