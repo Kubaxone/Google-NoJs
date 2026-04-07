@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
-// Fake autocomplete suggestions (no API key needed)
-// In a real deployment you'd proxy to the Google Suggest API.
+// search.js — autocomplete, clear, lucky, mic
+// Runs after i18n.js. Locale strings arrive via the localeChanged event.
 // ---------------------------------------------------------------------------
 
 const SUGGESTIONS = [
@@ -17,8 +17,16 @@ const form         = document.getElementById("searchForm");
 const wrap         = document.querySelector(".search-wrap");
 const clearBtn     = document.getElementById("clearBtn");
 const autocomplete = document.getElementById("autocomplete");
+const luckyBtn     = document.getElementById("luckyBtn");
+const micBtn       = document.getElementById("micBtn");
 
-let activeIndex = -1;
+let activeIndex  = -1;
+let currentStrings = {};
+
+// -- i18n integration -------------------------------------------------------
+document.addEventListener("localeChanged", (e) => {
+  currentStrings = e.detail;
+});
 
 // -- Suggest ----------------------------------------------------------------
 function getSuggestions(q) {
@@ -31,15 +39,11 @@ function renderSuggestions(items) {
   list.innerHTML = "";
   activeIndex = -1;
 
-  if (items.length === 0) {
-    closeSuggestions();
-    return;
-  }
+  if (!items.length) { closeSuggestions(); return; }
 
-  items.forEach((text, i) => {
+  items.forEach(text => {
     const li = document.createElement("li");
     li.setAttribute("role", "option");
-    li.dataset.index = i;
     li.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -48,7 +52,7 @@ function renderSuggestions(items) {
       <span>${escapeHtml(text)}</span>
     `;
     li.addEventListener("mousedown", (e) => {
-      e.preventDefault(); // don't blur input
+      e.preventDefault();
       input.value = text;
       closeSuggestions();
       form.submit();
@@ -99,14 +103,12 @@ function highlight(items) {
   });
 }
 
-// Close dropdown when clicking outside
 document.addEventListener("click", (e) => {
   if (!autocomplete.contains(e.target)) closeSuggestions();
 });
 
 input.addEventListener("focus", () => {
-  const q = input.value.trim();
-  if (q) renderSuggestions(getSuggestions(q));
+  if (input.value.trim()) renderSuggestions(getSuggestions(input.value.trim()));
 });
 
 clearBtn.addEventListener("click", () => {
@@ -116,15 +118,24 @@ clearBtn.addEventListener("click", () => {
   input.focus();
 });
 
-// -- Feeling Lucky ----------------------------------------------------------
-function feelingLucky() {
+// -- Lucky ------------------------------------------------------------------
+luckyBtn.addEventListener("click", () => {
   const q = input.value.trim();
   if (!q) return;
   window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}&btnI=1`, "_blank");
-}
-
-// -- Handle Enter on form ---------------------------------------------------
-form.addEventListener("submit", (e) => {
-  closeSuggestions();
-  // form has action + method="get", so it submits normally — no need to prevent
 });
+
+// -- Mic --------------------------------------------------------------------
+micBtn.addEventListener("click", () => {
+  const msg = currentStrings.voice_unavailable || "Voice search is not available in this demo.";
+  alert(msg);
+});
+
+// -- Close dropdown on submit -----------------------------------------------
+form.addEventListener("submit", () => closeSuggestions());
+
+// -- Boot -------------------------------------------------------------------
+// i18n.js calls initI18n() which fires localeChanged; we just need to prime
+// currentStrings in case the event already fired before this script ran
+// (it won't, since i18n.js is async, but this is safe fallback)
+window.i18n.init().then(strings => { currentStrings = strings; });
