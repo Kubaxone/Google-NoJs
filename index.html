@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,10 +11,10 @@
 
   <!-- Header -->
   <header>
-    <a href="#">Gmail</a>
-    <a href="#">Images</a>
-    <!-- Grid icon -->
-    <button style="background:none;border:none;cursor:pointer;padding:6px;" title="Google apps">
+    <a href="#" data-i18n="header_gmail">Gmail</a>
+    <a href="#" data-i18n="header_images">Images</a>
+    <button style="background:none;border:none;cursor:pointer;padding:6px;"
+            data-i18n="apps_label" data-i18n-attr="title" title="Google apps">
       <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
         <path fill="#5f6368" d="M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
       </svg>
@@ -28,35 +28,29 @@
       <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
     </div>
 
-    <!-- Search form — submits to Google -->
+    <!-- Search form -->
     <form action="https://www.google.com/search" method="get" target="_blank" class="search-wrap" id="searchForm">
       <div class="autocomplete" id="autocomplete">
         <div class="search-box">
-          <!-- Search icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
           </svg>
 
-          <input
-            type="text"
-            name="q"
-            id="q"
-            autocomplete="off"
-            spellcheck="false"
-            aria-label="Search"
-            autofocus
-          />
+          <input type="text" name="q" id="q" autocomplete="off" spellcheck="false"
+                 aria-label="Search" autofocus />
 
-          <!-- Clear button (shown when input has text) -->
-          <button type="button" id="clearBtn" class="mic-btn" style="display:none;" title="Clear">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button type="button" id="clearBtn" class="mic-btn" style="display:none;"
+                  data-i18n="clear_label" data-i18n-attr="title" title="Clear">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>
 
-          <!-- Mic icon -->
-          <button type="button" class="mic-btn" title="Search by voice" onclick="alert('Voice search not available in this demo')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button type="button" class="mic-btn" id="micBtn" title="Search by voice">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
               <path d="M19 11a7 7 0 0 1-14 0"/>
               <line x1="12" y1="18" x2="12" y2="22"/>
@@ -65,42 +59,47 @@
           </button>
         </div>
 
-        <!-- Autocomplete suggestions -->
         <ul class="autocomplete-list" id="suggestionList" role="listbox"></ul>
       </div>
     </form>
 
     <!-- Buttons -->
     <div class="search-buttons">
-      <button class="btn" type="submit" form="searchForm">Google Search</button>
-      <button class="btn" type="button" onclick="feelingLucky()">I'm Feeling Lucky</button>
+      <button class="btn" type="submit" form="searchForm" data-i18n="search_button">Google Search</button>
+      <button class="btn" type="button" id="luckyBtn" data-i18n="lucky_button">I'm Feeling Lucky</button>
     </div>
 
+    <!-- Offered-in line -->
     <p class="lang-line">
-      Google offered in:
-      <a href="https://www.google.pl" target="_blank">Polski</a>
+      <span data-i18n="offered_in">Google offered in:</span>
+      <a href="https://www.google.pl" data-i18n="offered_lang" data-i18n-href="offered_lang_url"
+         target="_blank">Polski</a>
     </p>
+
+    <!-- Language picker -->
+    <div id="lang-picker"></div>
   </main>
 
   <!-- Footer -->
   <footer>
     <div class="footer-top">
-      <a href="#">Poland</a>
+      <a href="#" data-i18n="footer_country">United States</a>
     </div>
     <div class="footer-bottom">
       <div>
-        <a href="#">Advertising</a>
-        <a href="#">Business</a>
-        <a href="#">How Search works</a>
+        <a href="#" data-i18n="footer_advertising">Advertising</a>
+        <a href="#" data-i18n="footer_business">Business</a>
+        <a href="#" data-i18n="footer_how_search_works">How Search works</a>
       </div>
       <div>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Settings</a>
+        <a href="#" data-i18n="footer_privacy">Privacy</a>
+        <a href="#" data-i18n="footer_terms">Terms</a>
+        <a href="#" data-i18n="footer_settings">Settings</a>
       </div>
     </div>
   </footer>
 
+  <script src="assets/i18n.js"></script>
   <script src="assets/search.js"></script>
 </body>
 </html>
