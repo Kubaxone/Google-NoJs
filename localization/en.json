@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "dir": "ltr",
+  "search_placeholder": "",
+  "search_button": "Google Search",
+  "lucky_button": "I'm Feeling Lucky",
+  "offered_in": "Google offered in:",
+  "offered_lang": "Polski",
+  "offered_lang_url": "https://www.google.pl",
+  "footer_country": "United States",
+  "footer_advertising": "Advertising",
+  "footer_business": "Business",
+  "footer_how_search_works": "How Search works",
+  "footer_privacy": "Privacy",
+  "footer_terms": "Terms",
+  "footer_settings": "Settings",
+  "header_gmail": "Gmail",
+  "header_images": "Images",
+  "voice_unavailable": "Voice search is not available in this demo.",
+  "clear_label": "Clear",
+  "apps_label": "Google apps"
+}
