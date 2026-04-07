@@ -1,0 +1,22 @@
+{
+  "lang": "es",
+  "dir": "ltr",
+  "search_placeholder": "",
+  "search_button": "Buscar con Google",
+  "lucky_button": "Voy a tener suerte",
+  "offered_in": "Google disponible en:",
+  "offered_lang": "English",
+  "offered_lang_url": "https://www.google.com",
+  "footer_country": "España",
+  "footer_advertising": "Publicidad",
+  "footer_business": "Negocios",
+  "footer_how_search_works": "Cómo funciona la Búsqueda",
+  "footer_privacy": "Privacidad",
+  "footer_terms": "Condiciones",
+  "footer_settings": "Configuración",
+  "header_gmail": "Gmail",
+  "header_images": "Imágenes",
+  "voice_unavailable": "La búsqueda por voz no está disponible en esta demo.",
+  "clear_label": "Borrar",
+  "apps_label": "Aplicaciones de Google"
+}
