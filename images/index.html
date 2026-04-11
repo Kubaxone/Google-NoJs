@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Images</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <nav class="header-links">
+      <a href="#">Gmail</a>
+      <a href="#" class="active">Images</a>
+    </nav>
+
+    <a href="#" class="header-icon-btn" title="Google apps" aria-label="Google apps">
+      <img src="img/apps.svg" alt="" />
+    </a>
+
+    <div class="avatar" title="Google Account" role="button" tabindex="0">G</div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+
+    <!-- Logo -->
+    <div class="logo-wrap" aria-label="Google Images">
+      <div class="logo-text">
+        <span class="g1">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+      </div>
+      <div class="logo-sub">Images</div>
+    </div>
+
+    <!-- Search tabs -->
+    <div class="search-tabs" role="tablist" aria-label="Search type">
+      <button class="tab active" role="tab" aria-selected="true">Images</button>
+      <button class="tab" role="tab" aria-selected="false">Shopping</button>
+      <button class="tab" role="tab" aria-selected="false">News</button>
+      <button class="tab" role="tab" aria-selected="false">Maps</button>
+      <button class="tab" role="tab" aria-selected="false">More</button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-container">
+      <div class="search-box" role="search">
+        <img class="icon-search" src="img/search.svg" alt="" />
+
+        <input
+          type="text"
+          name="q"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search images"
+          placeholder=""
+          autofocus
+        />
+
+        <div class="search-divider" aria-hidden="true"></div>
+
+        <button class="icon-btn" title="Search by voice" aria-label="Search by voice">
+          <img src="img/mic.svg" alt="" />
+        </button>
+
+        <button class="icon-btn" title="Search by image" aria-label="Search by image">
+          <img src="img/camera.svg" alt="" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="search-buttons">
+      <button class="btn-google" type="submit">Google Search</button>
+      <button class="btn-google" type="button">Search by Image</button>
+    </div>
+
+    <!-- Safe search note -->
+    <p class="search-note">
+      SafeSearch: <a href="#">Moderate</a>
+    </p>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-country">Poland</div>
+    <nav class="footer-nav" aria-label="Footer links">
+      <div class="footer-nav-group">
+        <a href="#">Advertising</a>
+        <a href="#">Business</a>
+        <a href="#">How Search works</a>
+      </div>
+      <div class="footer-nav-group">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Settings</a>
+      </div>
+    </nav>
+  </footer>
+
+  <script src="assets/main.js"></script>
+</body>
+</html>
