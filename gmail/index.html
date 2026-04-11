@@ -1,0 +1,297 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.app { display: flex; height: 100vh; min-height: 600px; background: var(--color-background-tertiary); }
+.sidebar { width: 256px; min-width: 256px; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.compose-btn { display: flex; align-items: center; gap: 12px; padding: 16px 24px; margin: 8px 8px 16px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 24px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.compose-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.nav-item { display: flex; align-items: center; gap: 16px; padding: 4px 16px; border-radius: 24px; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); height: 36px; transition: background 0.1s; }
+.nav-item:hover { background: var(--color-background-secondary); }
+.nav-item.active { background: #E8F0FE; color: #1a73e8; font-weight: 500; }
+.nav-icon { width: 20px; height: 20px; opacity: 0.7; }
+.nav-item.active .nav-icon { opacity: 1; }
+.badge { margin-left: auto; font-size: 12px; font-weight: 500; }
+.nav-item.active .badge { color: #1a73e8; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-tertiary); }
+.toolbar-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); }
+.toolbar-btn:hover { background: var(--color-background-secondary); }
+.divider-v { width: 1px; height: 20px; background: var(--color-border-tertiary); margin: 0 4px; }
+.email-list { flex: 1; overflow-y: auto; background: var(--color-background-primary); border-radius: 16px; margin: 8px; }
+.email-row { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 52px; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; transition: background 0.1s; }
+.email-row:hover { background: #F2F6FC; box-shadow: 0 1px 2px rgba(0,0,0,0.1); z-index: 1; }
+.email-row.unread .sender { font-weight: 600; color: var(--color-text-primary); }
+.email-row.unread .subject { font-weight: 600; color: var(--color-text-primary); }
+.check-area { width: 40px; display: flex; align-items: center; justify-content: center; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.star { width: 28px; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); flex-shrink: 0; }
+.email-content { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; }
+.sender { font-size: 14px; width: 160px; min-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); }
+.subject-line { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; }
+.subject { font-size: 14px; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preview { font-size: 14px; color: var(--color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sep { color: var(--color-text-tertiary); }
+.time { font-size: 12px; color: var(--color-text-tertiary); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
+.tag.social { background: #E8F5E9; color: #1E8E3E; }
+.tag.promo { background: #E8F0FE; color: #1a73e8; }
+.tag.update { background: #FFF8E1; color: #F29900; }
+.header { display: flex; align-items: center; gap: 8px; padding: 8px 16px 4px; }
+.search-bar { flex: 1; display: flex; align-items: center; background: #EAF1FB; border-radius: 24px; padding: 8px 16px; gap: 12px; height: 48px; }
+.search-bar input { border: none; background: transparent; outline: none; font-size: 16px; color: var(--color-text-primary); flex: 1; font-family: var(--font-sans); }
+.search-bar input::placeholder { color: var(--color-text-tertiary); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #1a73e8; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: white; cursor: pointer; flex-shrink: 0; }
+.gmail-logo { display: flex; align-items: center; gap: 4px; width: 160px; min-width: 160px; padding-left: 8px; }
+.gmail-logo-text { font-size: 22px; color: var(--color-text-secondary); font-weight: 400; letter-spacing: -0.5px; }
+.gmail-logo span { color: #EA4335; }
+.gmail-logo span:nth-child(2) { color: #4285F4; }
+.gmail-logo span:nth-child(3) { color: #FBBC05; }
+.gmail-logo span:nth-child(4) { color: #34A853; }
+.gmail-logo span:nth-child(5) { color: #4285F4; }
+.gmail-logo span:nth-child(6) { color: #EA4335; }
+.tabs { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); padding: 0 8px; }
+.tab { display: flex; align-items: center; gap: 8px; padding: 12px 16px; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); border-bottom: 3px solid transparent; }
+.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
+@media (max-width: 700px) { .sidebar { display: none; } }
+</style>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="gmail-logo" style="padding: 12px 8px 8px 16px;">
+      <svg width="32" height="24" viewBox="0 0 32 24"><path fill="#4285F4" d="M2 6.8L16 15.5l14-8.7V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6.8z" opacity=".9"/><path fill="#EA4335" d="M30 4L16 12.8 2 4a2 2 0 012-2h24a2 2 0 012 2z"/><path fill="#4285F4" d="M2 4l14 8.8L30 4"/><path fill="#34A853" d="M2 4v2.8L16 15.5 30 6.8V4"/></svg>
+      <span style="font-size: 22px; font-weight: 400; color: #5f6368; letter-spacing: -0.5px; margin-left: 4px;">Gmail</span>
+    </div>
+
+    <button class="compose-btn" onclick="showCompose()">
+      <svg class="compose-icon" viewBox="0 0 24 24" fill="none"><path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z" fill="currentColor"/></svg>
+      Compose
+    </button>
+
+    <div class="nav-item active" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
+      Inbox <span class="badge">24</span>
+    </div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+      Starred
+    </div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z" fill="currentColor"/><path d="M6 13h5v4H6zm6-6h2v2h-2zM6 7h5v5H6zm6 4h2v2h-2zm0 4h2v2h-2z" fill="currentColor"/></svg>
+      Snoozed
+    </div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" fill="currentColor"/></svg>
+      Important
+    </div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z" fill="currentColor"/></svg>
+      Sent
+    </div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z" fill="currentColor"/></svg>
+      Drafts <span class="badge">3</span>
+    </div>
+    <div style="margin: 8px 16px; height: 0.5px; background: var(--color-border-tertiary);"></div>
+    <div class="nav-item" onclick="setActive(this)">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg>
+      More
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <div class="gmail-logo" style="padding: 0 8px;">
+        <svg width="32" height="24" viewBox="0 0 32 24"><path fill="#4285F4" d="M2 6.8L16 15.5l14-8.7V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6.8z" opacity=".9"/><path fill="#EA4335" d="M30 4L16 12.8 2 4a2 2 0 012-2h24a2 2 0 012 2z"/></svg>
+        <span style="font-size: 22px; font-weight: 400; color: #5f6368; margin-left: 4px;">Gmail</span>
+      </div>
+      <div class="search-bar" style="flex:1;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" placeholder="Search mail" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center; margin-left:8px;">
+        <div class="toolbar-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        </div>
+        <div class="toolbar-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        </div>
+        <div class="user-avatar">M</div>
+      </div>
+    </div>
+
+    <div id="inbox-view">
+      <div class="tabs">
+        <div class="tab active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1a73e8"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          Primary
+        </div>
+        <div class="tab" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Social <span style="font-size:12px; background:#E8F5E9; color:#1E8E3E; padding:1px 6px; border-radius:8px; margin-left:4px;">4</span>
+        </div>
+        <div class="tab" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+          Promotions <span style="font-size:12px; background:#E8F0FE; color:#1a73e8; padding:1px 6px; border-radius:8px; margin-left:4px;">12</span>
+        </div>
+      </div>
+
+      <div class="toolbar" style="background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <div class="toolbar-btn" title="Select all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></div>
+        <div class="divider-v"></div>
+        <div class="toolbar-btn" title="Refresh"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></div>
+        <div class="toolbar-btn" title="More options"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+        <div class="divider-v"></div>
+        <span style="font-size:13px; color: var(--color-text-secondary); margin-left:auto;">1–50 of 1,284</span>
+        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></div>
+        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+      </div>
+
+      <div class="email-list" id="email-list"></div>
+    </div>
+
+    <div id="compose-modal" style="display:none; position:absolute; bottom:0; right:24px; width:500px; border-radius:12px 12px 0 0; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index:100;">
+      <div style="background:#404040; color:white; padding:10px 16px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:14px; font-weight:500;">New Message</span>
+        <div style="display:flex; gap:8px; cursor:pointer;" onclick="document.getElementById('compose-modal').style.display='none'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </div>
+      </div>
+      <div style="padding:8px 16px; border-bottom:0.5px solid var(--color-border-tertiary);"><input placeholder="To" style="width:100%; border:none; outline:none; font-size:14px; background:transparent; color:var(--color-text-primary);"></div>
+      <div style="padding:8px 16px; border-bottom:0.5px solid var(--color-border-tertiary);"><input placeholder="Subject" style="width:100%; border:none; outline:none; font-size:14px; background:transparent; color:var(--color-text-primary);"></div>
+      <div style="height:200px; padding:12px 16px;"><textarea placeholder="" style="width:100%; height:100%; border:none; outline:none; resize:none; font-size:14px; background:transparent; font-family:var(--font-sans); color:var(--color-text-primary);"></textarea></div>
+      <div style="padding:12px 16px; display:flex; align-items:center; gap:16px;">
+        <button style="background:#1a73e8; color:white; border:none; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:500; cursor:pointer;">Send</button>
+        <div style="display:flex; gap:4px; margin-left:auto;">
+          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 005 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg></div>
+          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></div>
+          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const emails = [
+  { from: "Google", avatar: "G", color: "#EA4335", subject: "Security alert", preview: "A new sign-in on Windows — Google Account", time: "10:42 AM", unread: true, starred: true, tag: null },
+  { from: "GitHub", avatar: "GH", color: "#24292e", subject: "[GitHub] A third-party OAuth application has been added", preview: "Hey! A new OAuth App, Claude, was recently authorized to access your GitHub account.", time: "9:18 AM", unread: true, starred: false, tag: null },
+  { from: "Notion", avatar: "N", color: "#000000", subject: "Your weekly digest is here", preview: "See what your team has been working on this week", time: "8:55 AM", unread: true, starred: false, tag: "update" },
+  { from: "LinkedIn", avatar: "in", color: "#0077B5", subject: "You appeared in 12 searches this week", preview: "See who's been viewing your profile and reach out", time: "8:30 AM", unread: false, starred: true, tag: "social" },
+  { from: "Stripe", avatar: "S", color: "#635BFF", subject: "Your invoice from Stripe — $49.00", preview: "Invoice #IN-00192 — Thank you for your business!", time: "Yesterday", unread: true, starred: false, tag: null },
+  { from: "Mom", avatar: "M", color: "#E8710A", subject: "Weekend plans?", preview: "Hi honey, are you coming over for dinner on Sunday? Dad made a big pot of...", time: "Yesterday", unread: false, starred: true, tag: null },
+  { from: "Figma", avatar: "F", color: "#F24E1E", subject: "Your file was shared with you", preview: "Design System v2.0 was shared by Alex Johnson — Open in Figma", time: "Yesterday", unread: false, starred: false, tag: null },
+  { from: "Product Hunt", avatar: "PH", color: "#DA552F", subject: "Top products of the week", preview: "Raycast AI, Linear, Loom and 47 more launches you might have missed", time: "Mon", unread: false, starred: false, tag: "promo" },
+  { from: "Anthropic", avatar: "A", color: "#D4A27F", subject: "Your Claude Pro subscription", preview: "Thanks for subscribing to Claude Pro! Here's what's included in your plan.", time: "Mon", unread: false, starred: false, tag: null },
+  { from: "Airbnb", avatar: "Air", color: "#FF5A5F", subject: "Your upcoming trip to Barcelona", preview: "Check-in in 3 days! Here are some tips for your stay at Casa Batlló apartment", time: "Sun", unread: false, starred: true, tag: "update" },
+  { from: "Vercel", avatar: "▲", color: "#000000", subject: "[vercel] Deployment failed", preview: "Build failed for my-portfolio-site — TypeError: Cannot read property of undefined", time: "Sun", unread: false, starred: false, tag: null },
+  { from: "Netflix", avatar: "N", color: "#E50914", subject: "New releases you might like", preview: "Based on what you've watched: Ripley, Baby Reindeer, 3 Body Problem and more", time: "Sat", unread: false, starred: false, tag: "promo" },
+];
+
+function renderEmails() {
+  const list = document.getElementById('email-list');
+  list.innerHTML = emails.map((e, i) => `
+    <div class="email-row ${e.unread ? 'unread' : ''}" onclick="openEmail(${i})">
+      <div class="check-area">
+        <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid #bdbdbd; cursor:pointer;"></div>
+      </div>
+      <div class="avatar" style="background:${e.color}; color:white; font-size:${e.avatar.length > 2 ? '10px' : '13px'};">${e.avatar}</div>
+      <div class="star" onclick="event.stopPropagation(); toggleStar(${i}, this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="${e.starred ? '#F4B400' : 'none'}" stroke="${e.starred ? '#F4B400' : '#bdbdbd'}" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="email-content">
+        <div class="sender">${e.from}</div>
+        <div class="subject-line">
+          ${e.tag ? `<span class="tag ${e.tag}">${e.tag}</span>` : ''}
+          <span class="subject">${e.subject}</span>
+          <span class="sep">—</span>
+          <span class="preview">${e.preview}</span>
+        </div>
+      </div>
+      <div class="time">${e.time}</div>
+    </div>
+  `).join('');
+}
+
+function toggleStar(i, el) {
+  emails[i].starred = !emails[i].starred;
+  const svg = el.querySelector('svg');
+  svg.setAttribute('fill', emails[i].starred ? '#F4B400' : 'none');
+  svg.setAttribute('stroke', emails[i].starred ? '#F4B400' : '#bdbdbd');
+}
+
+function openEmail(i) {
+  const e = emails[i];
+  emails[i].unread = false;
+  const main = document.querySelector('.main');
+  main.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:0.5px solid var(--color-border-tertiary);">
+      <div class="toolbar-btn" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+      <div class="toolbar-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+      <div class="toolbar-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+    </div>
+    <div style="flex:1; overflow-y:auto; padding:24px 32px;">
+      <h2 style="font-size:22px; font-weight:400; margin-bottom:20px; color:var(--color-text-primary);">${e.subject}</h2>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+        <div class="avatar" style="background:${e.color}; color:white; width:40px; height:40px; font-size:${e.avatar.length>2?'10px':'14px'};">${e.avatar}</div>
+        <div style="flex:1;">
+          <div style="font-size:14px; font-weight:500; color:var(--color-text-primary);">${e.from}</div>
+          <div style="font-size:12px; color:var(--color-text-secondary);">to me <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M7 10l5 5 5-5z"/></svg></div>
+        </div>
+        <div style="font-size:12px; color:var(--color-text-secondary);">${e.time}</div>
+        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg></div>
+        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg></div>
+      </div>
+      <div style="font-size:14px; line-height:1.8; color:var(--color-text-primary); max-width:600px;">
+        <p style="margin-bottom:16px;">Hello,</p>
+        <p style="margin-bottom:16px;">${e.preview}</p>
+        <p style="margin-bottom:16px;">If you did not expect this, please review your account security settings and revoke any unauthorized access immediately.</p>
+        <p style="margin-bottom:24px;">Best regards,<br>${e.from} Team</p>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button style="border:0.5px solid var(--color-border-secondary); background:transparent; padding:8px 20px; border-radius:20px; font-size:14px; cursor:pointer; color:var(--color-text-primary); display:flex; align-items:center; gap:8px;" onclick="showCompose()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+          Reply
+        </button>
+        <button style="border:0.5px solid var(--color-border-secondary); background:transparent; padding:8px 20px; border-radius:20px; font-size:14px; cursor:pointer; color:var(--color-text-primary); display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+          Forward
+        </button>
+      </div>
+    </div>
+  `;
+  main.style.display = 'flex';
+  main.style.flexDirection = 'column';
+}
+
+function goBack() {
+  const main = document.querySelector('.main');
+  main.innerHTML = '';
+  main.appendChild(buildInbox());
+  renderEmails();
+}
+
+function buildInbox() {
+  return document.getElementById('inbox-view');
+}
+
+function goBack() {
+  location.reload();
+}
+
+function showCompose() {
+  const m = document.getElementById('compose-modal');
+  if (m) { m.style.display = m.style.display === 'none' ? 'block' : 'none'; }
+}
+
+function setActive(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+renderEmails();
+</script>
