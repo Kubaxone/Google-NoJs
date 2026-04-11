@@ -1,297 +1,423 @@
-
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
-.app { display: flex; height: 100vh; min-height: 600px; background: var(--color-background-tertiary); }
-.sidebar { width: 256px; min-width: 256px; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
-.compose-btn { display: flex; align-items: center; gap: 12px; padding: 16px 24px; margin: 8px 8px 16px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 24px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
-.compose-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-.nav-item { display: flex; align-items: center; gap: 16px; padding: 4px 16px; border-radius: 24px; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); height: 36px; transition: background 0.1s; }
-.nav-item:hover { background: var(--color-background-secondary); }
-.nav-item.active { background: #E8F0FE; color: #1a73e8; font-weight: 500; }
-.nav-icon { width: 20px; height: 20px; opacity: 0.7; }
-.nav-item.active .nav-icon { opacity: 1; }
-.badge { margin-left: auto; font-size: 12px; font-weight: 500; }
-.nav-item.active .badge { color: #1a73e8; }
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-tertiary); }
-.toolbar-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); }
-.toolbar-btn:hover { background: var(--color-background-secondary); }
-.divider-v { width: 1px; height: 20px; background: var(--color-border-tertiary); margin: 0 4px; }
-.email-list { flex: 1; overflow-y: auto; background: var(--color-background-primary); border-radius: 16px; margin: 8px; }
-.email-row { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 52px; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; transition: background 0.1s; }
-.email-row:hover { background: #F2F6FC; box-shadow: 0 1px 2px rgba(0,0,0,0.1); z-index: 1; }
-.email-row.unread .sender { font-weight: 600; color: var(--color-text-primary); }
-.email-row.unread .subject { font-weight: 600; color: var(--color-text-primary); }
-.check-area { width: 40px; display: flex; align-items: center; justify-content: center; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
-.star { width: 28px; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); flex-shrink: 0; }
-.email-content { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; }
-.sender { font-size: 14px; width: 160px; min-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); }
-.subject-line { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; }
-.subject { font-size: 14px; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.preview { font-size: 14px; color: var(--color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sep { color: var(--color-text-tertiary); }
-.time { font-size: 12px; color: var(--color-text-tertiary); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
-.tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
-.tag.social { background: #E8F5E9; color: #1E8E3E; }
-.tag.promo { background: #E8F0FE; color: #1a73e8; }
-.tag.update { background: #FFF8E1; color: #F29900; }
-.header { display: flex; align-items: center; gap: 8px; padding: 8px 16px 4px; }
-.search-bar { flex: 1; display: flex; align-items: center; background: #EAF1FB; border-radius: 24px; padding: 8px 16px; gap: 12px; height: 48px; }
-.search-bar input { border: none; background: transparent; outline: none; font-size: 16px; color: var(--color-text-primary); flex: 1; font-family: var(--font-sans); }
-.search-bar input::placeholder { color: var(--color-text-tertiary); }
-.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #1a73e8; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: white; cursor: pointer; flex-shrink: 0; }
-.gmail-logo { display: flex; align-items: center; gap: 4px; width: 160px; min-width: 160px; padding-left: 8px; }
-.gmail-logo-text { font-size: 22px; color: var(--color-text-secondary); font-weight: 400; letter-spacing: -0.5px; }
-.gmail-logo span { color: #EA4335; }
-.gmail-logo span:nth-child(2) { color: #4285F4; }
-.gmail-logo span:nth-child(3) { color: #FBBC05; }
-.gmail-logo span:nth-child(4) { color: #34A853; }
-.gmail-logo span:nth-child(5) { color: #4285F4; }
-.gmail-logo span:nth-child(6) { color: #EA4335; }
-.tabs { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); padding: 0 8px; }
-.tab { display: flex; align-items: center; gap: 8px; padding: 12px 16px; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); border-bottom: 3px solid transparent; }
-.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
-@media (max-width: 700px) { .sidebar { display: none; } }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Gmail uses Google Sans; load Roboto as fallback from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
 
 <div class="app">
-  <div class="sidebar">
-    <div class="gmail-logo" style="padding: 12px 8px 8px 16px;">
-      <svg width="32" height="24" viewBox="0 0 32 24"><path fill="#4285F4" d="M2 6.8L16 15.5l14-8.7V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6.8z" opacity=".9"/><path fill="#EA4335" d="M30 4L16 12.8 2 4a2 2 0 012-2h24a2 2 0 012 2z"/><path fill="#4285F4" d="M2 4l14 8.8L30 4"/><path fill="#34A853" d="M2 4v2.8L16 15.5 30 6.8V4"/></svg>
-      <span style="font-size: 22px; font-weight: 400; color: #5f6368; letter-spacing: -0.5px; margin-left: 4px;">Gmail</span>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <a href="#" class="logo">
+      <!-- Gmail SVG logo inline -->
+      <svg width="40" height="30" viewBox="0 0 40 30" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#4285F4" d="M2 26h4V14L2 10z"/>
+        <path fill="#34A853" d="M34 26h4V10l-4 4z"/>
+        <path fill="#EA4335" d="M38 4H2l18 13z"/>
+        <path fill="#FBBC05" d="M2 10l4 4V4z"/>
+        <path fill="#34A853" d="M38 4l-4 6v16h4z"/>
+        <path d="M2 4v6l18 10L38 10V4L20 14z" fill="#4285F4" opacity=".2"/>
+      </svg>
+      <span class="logo-text">Gmail</span>
+    </a>
+
+    <div class="search-bar">
+      <span class="search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </span>
+      <input type="text" placeholder="Search mail" id="search-input" />
+      <button class="filter-btn" title="Show search options">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+      </button>
     </div>
 
-    <button class="compose-btn" onclick="showCompose()">
-      <svg class="compose-icon" viewBox="0 0 24 24" fill="none"><path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z" fill="currentColor"/></svg>
-      Compose
-    </button>
-
-    <div class="nav-item active" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
-      Inbox <span class="badge">24</span>
-    </div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
-      Starred
-    </div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z" fill="currentColor"/><path d="M6 13h5v4H6zm6-6h2v2h-2zM6 7h5v5H6zm6 4h2v2h-2zm0 4h2v2h-2z" fill="currentColor"/></svg>
-      Snoozed
-    </div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" fill="currentColor"/></svg>
-      Important
-    </div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z" fill="currentColor"/></svg>
-      Sent
-    </div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z" fill="currentColor"/></svg>
-      Drafts <span class="badge">3</span>
-    </div>
-    <div style="margin: 8px 16px; height: 0.5px; background: var(--color-border-tertiary);"></div>
-    <div class="nav-item" onclick="setActive(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg>
-      More
+    <div class="top-right">
+      <button class="icon-btn" title="Apps">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M6 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 14c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 20c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+      </button>
+      <button class="icon-btn" title="Notifications">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </button>
+      <button class="icon-btn" title="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+      </button>
+      <div class="user-avatar" title="Google Account">M</div>
     </div>
   </div>
 
-  <div class="main">
-    <div class="header">
-      <div class="gmail-logo" style="padding: 0 8px;">
-        <svg width="32" height="24" viewBox="0 0 32 24"><path fill="#4285F4" d="M2 6.8L16 15.5l14-8.7V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6.8z" opacity=".9"/><path fill="#EA4335" d="M30 4L16 12.8 2 4a2 2 0 012-2h24a2 2 0 012 2z"/></svg>
-        <span style="font-size: 22px; font-weight: 400; color: #5f6368; margin-left: 4px;">Gmail</span>
-      </div>
-      <div class="search-bar" style="flex:1;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <input type="text" placeholder="Search mail" />
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
-      </div>
-      <div style="display:flex; gap:8px; align-items:center; margin-left:8px;">
-        <div class="toolbar-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-        </div>
-        <div class="toolbar-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-        </div>
-        <div class="user-avatar">M</div>
-      </div>
-    </div>
+  <!-- ===== BODY ===== -->
+  <div class="body">
 
-    <div id="inbox-view">
-      <div class="tabs">
-        <div class="tab active">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1a73e8"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar">
+      <button class="compose-btn" onclick="openCompose()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#001d35"><path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+        <span>Compose</span>
+      </button>
+
+      <a href="#" class="nav-item active" onclick="showInbox(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <span>Inbox</span>
+        <span class="nav-badge">24</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <span>Starred</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z"/><path d="M6 13h5v4H6zm6-6h2v2h-2zM6 7h5v5H6zm6 4h2v2h-2zm0 4h2v2h-2z"/></svg>
+        <span>Snoozed</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+        <span>Important</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        <span>Sent</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        <span>Drafts</span>
+        <span class="nav-badge">3</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        <span>Contacts</span>
+      </a>
+
+      <div class="nav-section-label">Labels</div>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24" fill="#0b8043"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+        <span>Work</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24" fill="#1a73e8"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+        <span>Personal</span>
+      </a>
+      <a href="#" class="nav-item" onclick="setNav(event, this)">
+        <svg viewBox="0 0 24 24" fill="#e8710a"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+        <span>Finance</span>
+      </a>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main" id="main-panel">
+
+      <!-- TABS -->
+      <div class="tabs" id="inbox-tabs">
+        <div class="tab active" onclick="setTab(this)">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
           Primary
         </div>
-        <div class="tab" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-          Social <span style="font-size:12px; background:#E8F5E9; color:#1E8E3E; padding:1px 6px; border-radius:8px; margin-left:4px;">4</span>
+        <div class="tab" onclick="setTab(this)">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Social <span class="tab-badge social">4</span>
         </div>
-        <div class="tab" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
-          Promotions <span style="font-size:12px; background:#E8F0FE; color:#1a73e8; padding:1px 6px; border-radius:8px; margin-left:4px;">12</span>
+        <div class="tab" onclick="setTab(this)">
+          <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+          Promotions <span class="tab-badge promo">12</span>
         </div>
       </div>
 
-      <div class="toolbar" style="background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary);">
-        <div class="toolbar-btn" title="Select all">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <button class="toolbar-btn" title="Select all">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </button>
+        <button class="toolbar-btn" title="More">
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </button>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" title="Refresh">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        </button>
+        <button class="toolbar-btn" title="More options">
+          <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </button>
+        <div class="toolbar-pagination">
+          1–50 of 1,284
+          <button class="toolbar-btn">
+            <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
+          </button>
+          <button class="toolbar-btn">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </button>
         </div>
-        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></div>
-        <div class="divider-v"></div>
-        <div class="toolbar-btn" title="Refresh"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></div>
-        <div class="toolbar-btn" title="More options"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
-        <div class="divider-v"></div>
-        <span style="font-size:13px; color: var(--color-text-secondary); margin-left:auto;">1–50 of 1,284</span>
-        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></div>
-        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
       </div>
 
+      <!-- EMAIL LIST -->
       <div class="email-list" id="email-list"></div>
-    </div>
 
-    <div id="compose-modal" style="display:none; position:absolute; bottom:0; right:24px; width:500px; border-radius:12px 12px 0 0; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index:100;">
-      <div style="background:#404040; color:white; padding:10px 16px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:14px; font-weight:500;">New Message</span>
-        <div style="display:flex; gap:8px; cursor:pointer;" onclick="document.getElementById('compose-modal').style.display='none'">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </div>
-      </div>
-      <div style="padding:8px 16px; border-bottom:0.5px solid var(--color-border-tertiary);"><input placeholder="To" style="width:100%; border:none; outline:none; font-size:14px; background:transparent; color:var(--color-text-primary);"></div>
-      <div style="padding:8px 16px; border-bottom:0.5px solid var(--color-border-tertiary);"><input placeholder="Subject" style="width:100%; border:none; outline:none; font-size:14px; background:transparent; color:var(--color-text-primary);"></div>
-      <div style="height:200px; padding:12px 16px;"><textarea placeholder="" style="width:100%; height:100%; border:none; outline:none; resize:none; font-size:14px; background:transparent; font-family:var(--font-sans); color:var(--color-text-primary);"></textarea></div>
-      <div style="padding:12px 16px; display:flex; align-items:center; gap:16px;">
-        <button style="background:#1a73e8; color:white; border:none; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:500; cursor:pointer;">Send</button>
-        <div style="display:flex; gap:4px; margin-left:auto;">
-          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 005 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg></div>
-          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></div>
-          <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="#5f6368"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
-        </div>
-      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ===== COMPOSE MODAL ===== -->
+<div class="compose-modal" id="compose-modal">
+  <div class="compose-header" onclick="toggleCompose()">
+    <span>New Message</span>
+    <div class="compose-header-btns">
+      <button class="compose-header-btn" title="Minimize" onclick="event.stopPropagation()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+      </button>
+      <button class="compose-header-btn" title="Full screen" onclick="event.stopPropagation()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+      <button class="compose-header-btn" title="Close" onclick="closeCompose(); event.stopPropagation()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="compose-field">
+    <label>To</label>
+    <input type="text" id="compose-to" placeholder="" />
+  </div>
+  <div class="compose-field">
+    <label>Subject</label>
+    <input type="text" id="compose-subject" placeholder="" />
+  </div>
+  <div class="compose-body">
+    <textarea id="compose-body"></textarea>
+  </div>
+  <div class="compose-footer">
+    <button class="send-btn">Send</button>
+    <div class="compose-tools">
+      <button class="toolbar-btn" title="Formatting">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Attach files">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 005 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Insert link">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Insert emoji">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Delete draft">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+      </button>
     </div>
   </div>
 </div>
 
 <script>
+// ===== EMAIL DATA =====
 const emails = [
-  { from: "Google", avatar: "G", color: "#EA4335", subject: "Security alert", preview: "A new sign-in on Windows — Google Account", time: "10:42 AM", unread: true, starred: true, tag: null },
-  { from: "GitHub", avatar: "GH", color: "#24292e", subject: "[GitHub] A third-party OAuth application has been added", preview: "Hey! A new OAuth App, Claude, was recently authorized to access your GitHub account.", time: "9:18 AM", unread: true, starred: false, tag: null },
-  { from: "Notion", avatar: "N", color: "#000000", subject: "Your weekly digest is here", preview: "See what your team has been working on this week", time: "8:55 AM", unread: true, starred: false, tag: "update" },
-  { from: "LinkedIn", avatar: "in", color: "#0077B5", subject: "You appeared in 12 searches this week", preview: "See who's been viewing your profile and reach out", time: "8:30 AM", unread: false, starred: true, tag: "social" },
-  { from: "Stripe", avatar: "S", color: "#635BFF", subject: "Your invoice from Stripe — $49.00", preview: "Invoice #IN-00192 — Thank you for your business!", time: "Yesterday", unread: true, starred: false, tag: null },
-  { from: "Mom", avatar: "M", color: "#E8710A", subject: "Weekend plans?", preview: "Hi honey, are you coming over for dinner on Sunday? Dad made a big pot of...", time: "Yesterday", unread: false, starred: true, tag: null },
-  { from: "Figma", avatar: "F", color: "#F24E1E", subject: "Your file was shared with you", preview: "Design System v2.0 was shared by Alex Johnson — Open in Figma", time: "Yesterday", unread: false, starred: false, tag: null },
-  { from: "Product Hunt", avatar: "PH", color: "#DA552F", subject: "Top products of the week", preview: "Raycast AI, Linear, Loom and 47 more launches you might have missed", time: "Mon", unread: false, starred: false, tag: "promo" },
-  { from: "Anthropic", avatar: "A", color: "#D4A27F", subject: "Your Claude Pro subscription", preview: "Thanks for subscribing to Claude Pro! Here's what's included in your plan.", time: "Mon", unread: false, starred: false, tag: null },
-  { from: "Airbnb", avatar: "Air", color: "#FF5A5F", subject: "Your upcoming trip to Barcelona", preview: "Check-in in 3 days! Here are some tips for your stay at Casa Batlló apartment", time: "Sun", unread: false, starred: true, tag: "update" },
-  { from: "Vercel", avatar: "▲", color: "#000000", subject: "[vercel] Deployment failed", preview: "Build failed for my-portfolio-site — TypeError: Cannot read property of undefined", time: "Sun", unread: false, starred: false, tag: null },
-  { from: "Netflix", avatar: "N", color: "#E50914", subject: "New releases you might like", preview: "Based on what you've watched: Ripley, Baby Reindeer, 3 Body Problem and more", time: "Sat", unread: false, starred: false, tag: "promo" },
+  { id:0, from:"Google",       initials:"G",   color:"#EA4335", subject:"Security alert",                             preview:"A new sign-in on Windows — review your account",          time:"10:42 AM", unread:true,  starred:true,  tag:null },
+  { id:1, from:"GitHub",       initials:"GH",  color:"#24292e", subject:"OAuth application authorized",              preview:"Claude was recently authorized to access your GitHub",     time:"9:18 AM",  unread:true,  starred:false, tag:null },
+  { id:2, from:"Notion",       initials:"N",   color:"#000",    subject:"Your weekly digest is here",                preview:"See what your team has been working on this week",         time:"8:55 AM",  unread:true,  starred:false, tag:"update" },
+  { id:3, from:"LinkedIn",     initials:"in",  color:"#0077B5", subject:"You appeared in 12 searches this week",     preview:"See who's been viewing your profile and reach out",        time:"8:30 AM",  unread:false, starred:true,  tag:"social" },
+  { id:4, from:"Stripe",       initials:"S",   color:"#635BFF", subject:"Your invoice from Stripe — $49.00",         preview:"Invoice #IN-00192 — Thank you for your business!",         time:"Yesterday",unread:true,  starred:false, tag:null },
+  { id:5, from:"Mom",          initials:"M",   color:"#E8710A", subject:"Weekend plans?",                            preview:"Hi honey, are you coming over for dinner on Sunday?",      time:"Yesterday",unread:false, starred:true,  tag:null },
+  { id:6, from:"Figma",        initials:"F",   color:"#F24E1E", subject:"Design System v2.0 was shared with you",   preview:"Alex Johnson shared a file — Open in Figma",              time:"Yesterday",unread:false, starred:false, tag:null },
+  { id:7, from:"Product Hunt", initials:"PH",  color:"#DA552F", subject:"Top products of the week",                 preview:"Raycast AI, Linear, Loom and 47 more launches",            time:"Mon",      unread:false, starred:false, tag:"promo" },
+  { id:8, from:"Anthropic",    initials:"A",   color:"#D4A27F", subject:"Your Claude Pro subscription",             preview:"Thanks for subscribing! Here's what's included.",          time:"Mon",      unread:false, starred:false, tag:null },
+  { id:9, from:"Airbnb",       initials:"Air", color:"#FF5A5F", subject:"Your upcoming trip to Barcelona",          preview:"Check-in in 3 days! Tips for your stay",                   time:"Sun",      unread:false, starred:true,  tag:"update" },
+  { id:10,from:"Vercel",       initials:"▲",   color:"#000",    subject:"[vercel] Deployment failed",               preview:"TypeError: Cannot read property of undefined at build",    time:"Sun",      unread:false, starred:false, tag:null },
+  { id:11,from:"Netflix",      initials:"N",   color:"#E50914", subject:"New releases you might like",              preview:"Ripley, Baby Reindeer, 3 Body Problem and more",            time:"Sat",      unread:false, starred:false, tag:"promo" },
+  { id:12,from:"Apple",        initials:"",  color:"#555",    subject:"Your receipt from Apple",                   preview:"App Store purchase — $4.99 — PDF attached",                time:"Sat",      unread:false, starred:false, tag:null },
+  { id:13,from:"Dropbox",      initials:"DB",  color:"#0061FF", subject:"Someone viewed your shared folder",        preview:"Project Assets was viewed by 2 new people",               time:"Fri",      unread:false, starred:false, tag:null },
 ];
 
-function renderEmails() {
+// ===== RENDER EMAIL LIST =====
+function renderList() {
   const list = document.getElementById('email-list');
-  list.innerHTML = emails.map((e, i) => `
-    <div class="email-row ${e.unread ? 'unread' : ''}" onclick="openEmail(${i})">
-      <div class="check-area">
-        <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid #bdbdbd; cursor:pointer;"></div>
+  list.innerHTML = emails.map(e => `
+    <div class="email-row ${e.unread ? 'unread' : 'read'}" data-id="${e.id}" onclick="openEmail(${e.id})">
+      <div class="row-check" onclick="event.stopPropagation()">
+        <input type="checkbox" />
       </div>
-      <div class="avatar" style="background:${e.color}; color:white; font-size:${e.avatar.length > 2 ? '10px' : '13px'};">${e.avatar}</div>
-      <div class="star" onclick="event.stopPropagation(); toggleStar(${i}, this)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="${e.starred ? '#F4B400' : 'none'}" stroke="${e.starred ? '#F4B400' : '#bdbdbd'}" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+
+      <div class="row-star ${e.starred ? 'starred' : ''}" onclick="toggleStar(event, ${e.id})">
+        <svg viewBox="0 0 24 24" stroke-width="1.5">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
       </div>
-      <div class="email-content">
-        <div class="sender">${e.from}</div>
-        <div class="subject-line">
-          ${e.tag ? `<span class="tag ${e.tag}">${e.tag}</span>` : ''}
-          <span class="subject">${e.subject}</span>
-          <span class="sep">—</span>
-          <span class="preview">${e.preview}</span>
+
+      <div class="row-avatar" style="background:${e.color}; font-size:${e.initials.length > 2 ? '10px' : '13px'}">
+        ${e.initials}
+      </div>
+
+      <div class="row-content">
+        <div class="row-sender">${e.from}</div>
+        <div class="row-body">
+          ${e.tag ? `<span class="row-tag ${e.tag}">${e.tag}</span>` : ''}
+          <span class="row-subject">${e.subject}</span>
+          <span class="row-sep">—</span>
+          <span class="row-preview">${e.preview}</span>
         </div>
       </div>
-      <div class="time">${e.time}</div>
+
+      <div class="email-time">${e.time}</div>
+      <div class="row-actions">
+        <button class="toolbar-btn" title="Archive" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/></svg>
+        </button>
+        <button class="toolbar-btn" title="Delete" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </button>
+        <button class="toolbar-btn" title="Mark as read" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2l-.01-12zm-2 0l-8 5-8-5 8-4.68L19.99 8z"/></svg>
+        </button>
+        <button class="toolbar-btn" title="Snooze" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z"/></svg>
+        </button>
+      </div>
     </div>
   `).join('');
 }
 
-function toggleStar(i, el) {
-  emails[i].starred = !emails[i].starred;
-  const svg = el.querySelector('svg');
-  svg.setAttribute('fill', emails[i].starred ? '#F4B400' : 'none');
-  svg.setAttribute('stroke', emails[i].starred ? '#F4B400' : '#bdbdbd');
-}
+// ===== OPEN EMAIL =====
+function openEmail(id) {
+  const e = emails.find(x => x.id === id);
+  if (!e) return;
+  e.unread = false;
 
-function openEmail(i) {
-  const e = emails[i];
-  emails[i].unread = false;
-  const main = document.querySelector('.main');
-  main.innerHTML = `
-    <div style="display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:0.5px solid var(--color-border-tertiary);">
-      <div class="toolbar-btn" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-      <div class="toolbar-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
-      <div class="toolbar-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+  const panel = document.getElementById('main-panel');
+  panel.innerHTML = `
+    <div class="toolbar">
+      <button class="toolbar-btn" title="Back to inbox" onclick="backToInbox()">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Archive">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Delete">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Mark as unread">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2l-.01-12zm-2 0l-8 5-8-5 8-4.68L19.99 8z"/></svg>
+      </button>
+      <div class="toolbar-divider"></div>
+      <button class="toolbar-btn" title="More options">
+        <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+      <div class="toolbar-pagination">1 of ${emails.length}</div>
     </div>
-    <div style="flex:1; overflow-y:auto; padding:24px 32px;">
-      <h2 style="font-size:22px; font-weight:400; margin-bottom:20px; color:var(--color-text-primary);">${e.subject}</h2>
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
-        <div class="avatar" style="background:${e.color}; color:white; width:40px; height:40px; font-size:${e.avatar.length>2?'10px':'14px'};">${e.avatar}</div>
-        <div style="flex:1;">
-          <div style="font-size:14px; font-weight:500; color:var(--color-text-primary);">${e.from}</div>
-          <div style="font-size:12px; color:var(--color-text-secondary);">to me <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M7 10l5 5 5-5z"/></svg></div>
+    <div class="email-detail">
+      <h1 class="detail-subject">${e.subject}</h1>
+      <div class="detail-header">
+        <div class="detail-avatar" style="background:${e.color}; font-size:${e.initials.length > 2 ? '10px' : '14px'}">${e.initials}</div>
+        <div class="detail-sender-info">
+          <div class="detail-sender-name">${e.from} <span style="font-weight:400; color:#5f6368">&lt;noreply@${e.from.toLowerCase().replace(/\s/g,'')}.com&gt;</span></div>
+          <div class="detail-sender-meta">to me <svg width="12" height="12" viewBox="0 0 24 24" fill="#5f6368" style="vertical-align:middle"><path d="M7 10l5 5 5-5z"/></svg></div>
         </div>
-        <div style="font-size:12px; color:var(--color-text-secondary);">${e.time}</div>
-        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg></div>
-        <div class="toolbar-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg></div>
+        <div class="detail-time">${e.time}</div>
+        <button class="toolbar-btn">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+        </button>
+        <button class="toolbar-btn">
+          <svg viewBox="0 0 24 24" fill="#5f6368"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </button>
       </div>
-      <div style="font-size:14px; line-height:1.8; color:var(--color-text-primary); max-width:600px;">
-        <p style="margin-bottom:16px;">Hello,</p>
-        <p style="margin-bottom:16px;">${e.preview}</p>
-        <p style="margin-bottom:16px;">If you did not expect this, please review your account security settings and revoke any unauthorized access immediately.</p>
-        <p style="margin-bottom:24px;">Best regards,<br>${e.from} Team</p>
+      <div class="detail-body">
+        <p>Hello,</p>
+        <p>${e.preview}</p>
+        <p>Please review this information and take any necessary action. If you did not expect this notification, you can review your account security settings to ensure everything is in order.</p>
+        <p>If you have any questions, our support team is available 24/7 to assist you.</p>
+        <p>Best regards,<br /><strong>${e.from}</strong></p>
       </div>
-      <div style="display:flex; gap:12px; margin-top:16px;">
-        <button style="border:0.5px solid var(--color-border-secondary); background:transparent; padding:8px 20px; border-radius:20px; font-size:14px; cursor:pointer; color:var(--color-text-primary); display:flex; align-items:center; gap:8px;" onclick="showCompose()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+      <div class="detail-actions">
+        <button class="detail-action-btn" onclick="openCompose()">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
           Reply
         </button>
-        <button style="border:0.5px solid var(--color-border-secondary); background:transparent; padding:8px 20px; border-radius:20px; font-size:14px; cursor:pointer; color:var(--color-text-primary); display:flex; align-items:center; gap:8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+        <button class="detail-action-btn" onclick="openCompose()">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
           Forward
         </button>
       </div>
     </div>
   `;
-  main.style.display = 'flex';
-  main.style.flexDirection = 'column';
 }
 
-function goBack() {
-  const main = document.querySelector('.main');
-  main.innerHTML = '';
-  main.appendChild(buildInbox());
-  renderEmails();
+// ===== BACK TO INBOX =====
+function backToInbox() {
+  const panel = document.getElementById('main-panel');
+  panel.innerHTML = `
+    <div class="tabs" id="inbox-tabs">
+      <div class="tab active" onclick="setTab(this)">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        Primary
+      </div>
+      <div class="tab" onclick="setTab(this)">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Social <span class="tab-badge social">4</span>
+      </div>
+      <div class="tab" onclick="setTab(this)">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+        Promotions <span class="tab-badge promo">12</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="toolbar-btn"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></button>
+      <button class="toolbar-btn"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      <div class="toolbar-divider"></div>
+      <button class="toolbar-btn"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+      <div class="toolbar-pagination">1–50 of 1,284
+        <button class="toolbar-btn"><svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></button>
+        <button class="toolbar-btn"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </div>
+    <div class="email-list" id="email-list"></div>
+  `;
+  renderList();
 }
 
-function buildInbox() {
-  return document.getElementById('inbox-view');
+// ===== STAR TOGGLE =====
+function toggleStar(event, id) {
+  event.stopPropagation();
+  const e = emails.find(x => x.id === id);
+  if (!e) return;
+  e.starred = !e.starred;
+  const row = document.querySelector(`.email-row[data-id="${id}"] .row-star`);
+  if (row) {
+    row.classList.toggle('starred', e.starred);
+  }
 }
 
-function goBack() {
-  location.reload();
+// ===== COMPOSE =====
+function openCompose() {
+  document.getElementById('compose-modal').classList.add('open');
+}
+function closeCompose() {
+  document.getElementById('compose-modal').classList.remove('open');
+}
+function toggleCompose() {
+  document.getElementById('compose-modal').classList.toggle('open');
 }
 
-function showCompose() {
-  const m = document.getElementById('compose-modal');
-  if (m) { m.style.display = m.style.display === 'none' ? 'block' : 'none'; }
+// ===== TAB & NAV =====
+function setTab(el) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
-
-function setActive(el) {
+function setNav(event, el) {
+  event.preventDefault();
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
 }
+function showInbox(event, el) {
+  event.preventDefault();
+  setNav(event, el);
+  backToInbox();
+}
 
-renderEmails();
+// ===== INIT =====
+renderList();
 </script>
+</body>
+</html>
