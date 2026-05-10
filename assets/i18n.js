@@ -1,6 +1,6 @@
-// ---------------------------------------------------------------------------
+
 // i18n.js — loads a locale JSON and applies it to data-i18n elements
-// ---------------------------------------------------------------------------
+
 
 const SUPPORTED = ["en", "es", "pl", "temulanguange"];
 const DEFAULT_LANG = "en";
